@@ -1,4 +1,4 @@
-# Blabla
+# S32K1xx OpenSDA Bootloader Update
 
 Please note that for some reason this process CANNOT be done on macOS. Trust
 me, even `mtools` doesn't do the trick here.

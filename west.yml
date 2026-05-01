@@ -3,11 +3,13 @@ manifest:
   remotes:
   - name: zephyrproject-rtos
     url-base: https://github.com/zephyrproject-rtos
+  - name: inomotech-foss
+    url-base: https://github.com/inomotech-foss
 
   projects:
   - name: zephyr
-    remote: zephyrproject-rtos
-    revision: v4.4.0
+    remote: inomotech-foss
+    revision: aa2ecebf1c08a5d08c6aca63bcfdd3e34ccb5c11
     clone-depth: 1
     import:
       name-allowlist:
@@ -15,6 +17,11 @@ manifest:
       - "cmsis"
       - "hal_nxp"
       - "zephyr-lang-rust"
+  - name: hal_nxp
+    remote: inomotech-foss
+    repo-path: zephyr-hal-nxp
+    revision: 22a70d2c4f17a13bfd33dacbb65cabaff6ddcd95
+    path: modules/hal/nxp
 
   self:
     path: app
