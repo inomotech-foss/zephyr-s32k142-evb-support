@@ -11,9 +11,10 @@ manifest:
     clone-depth: 1
     import:
       name-allowlist:
-      - "cmsis"
       - "cmsis_6"
+      - "cmsis"
       - "hal_nxp"
+      - "zephyr-lang-rust"
 
   self:
     path: app
