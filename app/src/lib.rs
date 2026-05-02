@@ -7,20 +7,8 @@ use zephyr::time::{Duration, sleep};
 const ADC_CHANNEL: u8 = 12;
 const ADC_RESOLUTION: u8 = 12;
 
-// ADC0 device: use the ordinal from the generated devicetree module.
-// The linker symbol name must match __device_dts_ord_N where N = ORD.
-unsafe extern "C" {
-    #[link_name = "__device_dts_ord_44"]
-    static ADC0_DEVICE: raw::device;
-}
-
-/// Get the ADC0 device pointer.
-fn adc0_device() -> *const raw::device {
-    unsafe { &ADC0_DEVICE as *const raw::device }
-}
-
 /// Set up ADC channel 12 (potentiometer on PTC14).
-unsafe fn adc_setup(dev: *const raw::device) -> i32 {
+unsafe fn adc_setup(adc: &zephyr::device::adc::Adc) -> i32 {
     unsafe {
         let mut cfg: raw::adc_channel_cfg = MaybeUninit::zeroed().assume_init();
         cfg.gain = raw::adc_gain_ADC_GAIN_1;
@@ -28,12 +16,12 @@ unsafe fn adc_setup(dev: *const raw::device) -> i32 {
         cfg.acquisition_time = 0; // ADC_ACQ_TIME_DEFAULT
         cfg.set_channel_id(ADC_CHANNEL);
         cfg.set_differential(0);
-        raw::adc_channel_setup(dev, &cfg)
+        adc.channel_setup(&cfg)
     }
 }
 
 /// Read a single sample from ADC channel 12.
-unsafe fn adc_read_pot(dev: *const raw::device) -> i16 {
+unsafe fn adc_read_pot(adc: &zephyr::device::adc::Adc) -> i16 {
     unsafe {
         let mut buf: i16 = 0;
         let mut seq: raw::adc_sequence = MaybeUninit::zeroed().assume_init();
@@ -42,7 +30,7 @@ unsafe fn adc_read_pot(dev: *const raw::device) -> i16 {
         seq.buffer_size = core::mem::size_of::<i16>();
         seq.resolution = ADC_RESOLUTION;
 
-        let ret = raw::adc_read(dev, &seq);
+        let ret = adc.read(&seq);
         if ret != 0 {
             return -1;
         }
@@ -70,9 +58,10 @@ extern "C" fn rust_main() {
         blue.set(&mut gpio_token, false);
     }
 
-    // Set up ADC0 channel 12 (potentiometer)
-    let adc_dev = adc0_device();
-    let ret = unsafe { adc_setup(adc_dev) };
+    // Get ADC0 device from devicetree and set up channel 12 (potentiometer)
+    let adc = zephyr::devicetree::soc::adc_4003b000::get_instance()
+        .expect("ADC0 already taken");
+    let ret = unsafe { adc_setup(&adc) };
     if ret != 0 {
         zephyr::printk!("ADC setup failed: {}\n", ret);
     }
@@ -84,7 +73,7 @@ extern "C" fn rust_main() {
 
     loop {
         // Read potentiometer (0-4095 for 12-bit)
-        let pot_value = unsafe { adc_read_pot(adc_dev) };
+        let pot_value = unsafe { adc_read_pot(&adc) };
 
         // Map pot value to delay: 50ms (fast) to 1000ms (slow)
         let delay_ms = if pot_value < 0 {
