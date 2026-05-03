@@ -22,6 +22,10 @@ manifest:
     repo-path: zephyr-hal-nxp
     revision: 01bac2bb068cffdc1c7e4946c1f16a25aaa462e6
     path: modules/hal/nxp
+  - name: zephyr-lang-rust
+    remote: inomotech-foss
+    revision: 74865239ba58164edc9b86c81a1346d98161b5db
+    path: modules/lang/rust
 
   self:
     path: app
