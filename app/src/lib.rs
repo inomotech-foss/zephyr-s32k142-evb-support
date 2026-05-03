@@ -42,25 +42,20 @@ unsafe fn adc_read_pot(adc: &zephyr::device::adc::Adc) -> i16 {
 extern "C" fn rust_main() {
     zephyr::printk!("Hello from S32K142!\n");
 
-    let mut gpio_token = unsafe { zephyr::device::gpio::GpioToken::get_instance().unwrap() };
-
     let mut red = zephyr::devicetree::aliases::led0::get_instance().unwrap();
     let mut green = zephyr::devicetree::aliases::led1::get_instance().unwrap();
     let mut blue = zephyr::devicetree::aliases::led2::get_instance().unwrap();
 
-    unsafe {
-        red.configure(&mut gpio_token, ZR_GPIO_OUTPUT_ACTIVE);
-        green.configure(&mut gpio_token, ZR_GPIO_OUTPUT_ACTIVE);
-        blue.configure(&mut gpio_token, ZR_GPIO_OUTPUT_ACTIVE);
+    red.configure(ZR_GPIO_OUTPUT_ACTIVE);
+    green.configure(ZR_GPIO_OUTPUT_ACTIVE);
+    blue.configure(ZR_GPIO_OUTPUT_ACTIVE);
 
-        red.set(&mut gpio_token, false);
-        green.set(&mut gpio_token, false);
-        blue.set(&mut gpio_token, false);
-    }
+    red.set(false);
+    green.set(false);
+    blue.set(false);
 
     // Get ADC0 device from devicetree and set up channel 12 (potentiometer)
-    let adc = zephyr::devicetree::soc::adc_4003b000::get_instance()
-        .expect("ADC0 already taken");
+    let adc = zephyr::devicetree::soc::adc_4003b000::get_instance().expect("ADC0 already taken");
     let ret = unsafe { adc_setup(&adc) };
     if ret != 0 {
         zephyr::printk!("ADC setup failed: {}\n", ret);
@@ -83,11 +78,14 @@ extern "C" fn rust_main() {
         };
 
         let prev = if i == 0 { 2 } else { i - 1 };
-        unsafe {
-            leds[prev].set(&mut gpio_token, false);
-            leds[i].set(&mut gpio_token, true);
-        }
-        zephyr::printk!("{} LED (pot={}, delay={}ms)\n", names[i], pot_value, delay_ms);
+        leds[prev].set(false);
+        leds[i].set(true);
+        zephyr::printk!(
+            "{} LED (pot={}, delay={}ms)\n",
+            names[i],
+            pot_value,
+            delay_ms
+        );
         i = (i + 1) % 3;
 
         sleep(Duration::millis_at_least(delay_ms as u64));

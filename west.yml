@@ -9,22 +9,23 @@ manifest:
   projects:
   - name: zephyr
     remote: inomotech-foss
-    revision: 3853a3a610a91a698101d2b125a2a48907de39d0
-    clone-depth: 1
+    revision: dd5ae6afd05544d770862ce3f7085f35b8ae9a7b
     import:
       name-allowlist:
       - "cmsis_6"
       - "cmsis"
       - "hal_nxp"
       - "zephyr-lang-rust"
+
   - name: hal_nxp
     remote: inomotech-foss
     repo-path: zephyr-hal-nxp
     revision: 01bac2bb068cffdc1c7e4946c1f16a25aaa462e6
     path: modules/hal/nxp
+
   - name: zephyr-lang-rust
     remote: inomotech-foss
-    revision: 74865239ba58164edc9b86c81a1346d98161b5db
+    revision: 2b0addf93e7a93b3853da883f816a1b28234ca0c
     path: modules/lang/rust
 
   self:
