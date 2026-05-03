@@ -9,7 +9,7 @@ manifest:
   projects:
   - name: zephyr
     remote: inomotech-foss
-    revision: aa2ecebf1c08a5d08c6aca63bcfdd3e34ccb5c11
+    revision: 3853a3a610a91a698101d2b125a2a48907de39d0
     clone-depth: 1
     import:
       name-allowlist:
@@ -20,7 +20,7 @@ manifest:
   - name: hal_nxp
     remote: inomotech-foss
     repo-path: zephyr-hal-nxp
-    revision: 22a70d2c4f17a13bfd33dacbb65cabaff6ddcd95
+    revision: 01bac2bb068cffdc1c7e4946c1f16a25aaa462e6
     path: modules/hal/nxp
 
   self:
