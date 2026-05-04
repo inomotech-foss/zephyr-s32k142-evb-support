@@ -17,3 +17,11 @@ Build and flash the included application:
 west build -b s32k142_evb app
 west flash
 ```
+
+## Development
+
+We currently maintain forks of various Zephyr modules while integrating the s32k142 support:
+
+- Zephyr (<https://github.com/inomotech-foss/zephyr>) - Device tree bindings.
+- Zephyr HAL NXP (<https://github.com/inomotech-foss/zephyr-hal-nxp>) - Support for the S32K142 MCU.
+- Zephyr Lang Rust (<https://github.com/inomotech-foss/zephyr-lang-rust>) - More Rust bindings for the included application.
